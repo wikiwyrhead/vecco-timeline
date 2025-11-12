@@ -49,13 +49,35 @@
 
 @media (max-width:420px){ .vecco-timeline .vecco-tl-item{ padding:2px 4px; } }
 
-/* Separator line */
-.vecco-timeline .vecco-tl-sep > .vecco-sep{ position:absolute; left:0; right:0; top:50%; transform:translateY(-50%); height:2px; background:#d9d9d9; border:0; margin:0; width:100%; display:block; }
+/* Separator line - aligned with icon vertical center (consistent across all screen sizes) */
+.vecco-timeline .vecco-tl-sep > .vecco-sep{ 
+  position:absolute;
+  left:0;
+  right:0;
+  /* Align with year text center: icon height + icon margin + half of year line-height */
+  top: calc(72px + 10px + 1.4em + 31px);
+  height:2px; 
+  background:#d9d9d9; 
+  border:0; 
+  margin:0;
+  width:100%; 
+  display:block; 
+}
 /* Extend line slightly on desktop, tighter on mobile */
 .vecco-timeline .vecco-tl-sep > .vecco-sep::before{ content:""; position:absolute; left:-96px; right:-96px; top:0; height:2px; background:inherit; }
-@media (max-width:768px){ .vecco-timeline .vecco-tl-sep > .vecco-sep::before{ left:-12px; right:-12px; } }
-@media (max-width:560px){ .vecco-timeline .vecco-tl-sep > .vecco-sep::before{ left:-10px; right:-10px; } }
-@media (max-width:420px){ .vecco-timeline .vecco-tl-sep > .vecco-sep::before{ left:-8px; right:-8px; } }
+@media (max-width:768px){ 
+  .vecco-timeline .vecco-tl-sep > .vecco-sep::before{ left:-12px; right:-12px; }
+}
+@media (max-width:560px){ 
+  .vecco-timeline .vecco-tl-sep > .vecco-sep::before{ left:-10px; right:-10px; }
+  /* Adjust for smaller icon (64px) + margin + half year height */
+  .vecco-timeline .vecco-tl-sep > .vecco-sep{ top: calc(64px + 10px + 1.3em + 31px); }
+}
+@media (max-width:420px){ 
+  .vecco-timeline .vecco-tl-sep > .vecco-sep::before{ left:-8px; right:-8px; }
+  /* Adjust for even smaller icon (56px) + margin + half year height */
+  .vecco-timeline .vecco-tl-sep > .vecco-sep{ top: calc(56px + 10px + 1.2em + 31px); }
+}
 
 /* Reduce inner horizontal padding on small screens to visually narrow container */
 @media (max-width:560px){ .vecco-timeline .vecco-tl-track{ padding:0; } }
