@@ -4,7 +4,7 @@
  * Description: Horizontal timeline with draggable scroll, custom CPT, shortcode rendering, and admin controls.
  * Version: 1.2.0
  * Author: arneLG.
- * Plugin URI: https://github.com/wikiwyrhead
+ * Plugin URI: https://github.com/wikiwyrhead/vecco-timeline
  * Author URI: https://github.com/wikiwyrhead
  * Text Domain: vecco-timeline
  */
