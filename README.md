@@ -41,7 +41,6 @@
 ---
 
 ## 📦 Installation
-## 📦 Installation
 
 ### Method 1: WordPress Admin (Recommended)
 1. Download the latest release from [Releases](https://github.com/wikiwyrhead/vecco-timeline/releases)
