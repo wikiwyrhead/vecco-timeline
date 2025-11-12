@@ -158,8 +158,6 @@ Contributions are welcome! Please:
 
 ## 📋 Changelog
 
-## 📋 Changelog
-
 ### 🎉 Version 1.2.0 - *November 2025*
 
 #### 🎨 Enhanced Admin Interface
