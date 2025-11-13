@@ -243,6 +243,11 @@ class Vecco_Timeline {
             /* Drag handle - refined */
             .vecco-tl-handle{cursor:move;opacity:.35;user-select:none;font-size:16px;line-height:1;transition:all .2s;color:#6b7280;align-self:center;padding:4px 0}
             .vecco-tl-handle:hover{opacity:.8;color:#374151}
+            
+            /* Sortable helper and placeholder */
+            .ui-sortable-helper{opacity:0.8;cursor:move!important;box-shadow:0 8px 24px rgba(0,0,0,.15)!important}
+            .ui-sortable-placeholder{visibility:visible!important;background:#f1f5f9!important;border:2px dashed #94a3b8!important;box-shadow:none!important}
+            
             .vecco-tl-svgtxt{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-size:12px;line-height:1.5}
 
             /* Shortcode helper */
@@ -255,7 +260,7 @@ class Vecco_Timeline {
             @media (max-width:960px){ .vecco-tl-row{grid-template-columns:22px 90px 1fr 1fr 1fr 180px 90px 150px 90px 80px} }
         </style>
         <script>
-        (function(){
+        jQuery(document).ready(function($){
           const wrap = document.getElementById('vecco-tl-items');
           const addBtn = document.getElementById('vecco-tl-add');
           if(!wrap||!addBtn) return;
@@ -285,6 +290,10 @@ class Vecco_Timeline {
             jQuery(wrap).sortable({
               handle: '.vecco-tl-handle',
               items: '.vecco-tl-row',
+              placeholder: 'ui-sortable-placeholder',
+              helper: 'clone',
+              opacity: 0.8,
+              cursor: 'move',
               stop: function(){ renumber(); }
             });
           }
@@ -358,7 +367,7 @@ class Vecco_Timeline {
             }catch(_){}
             document.body.removeChild(ta);
           }
-        })();
+        });
         </script>
         <?php
     }

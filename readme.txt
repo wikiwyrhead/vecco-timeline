@@ -5,7 +5,7 @@ Tags: timeline, slider, horizontal, shortcode, svg, icons
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.2.0
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -61,6 +61,12 @@ Yes. Paste sanitized SVG markup. It will inherit the item accent color.
 2. Frontend horizontal timeline with separators.
 
 == Changelog ==
+= 1.3.0 =
+* Fixed: Drag-to-reorder functionality in timeline editor now works correctly
+* Enhanced: Separator line now aligns with year text center across all viewports (desktop, tablet, mobile)
+* Enhanced: Added Settings link to plugin actions on plugins page for quick access
+* Improved: Timeline editor JavaScript now properly waits for jQuery UI Sortable to load
+
 = 1.2.0 =
 * Enhanced: Redesigned timeline editor with modern 4-column grid layout
 * Enhanced: Improved Timeline Settings page with card-based design for better readability

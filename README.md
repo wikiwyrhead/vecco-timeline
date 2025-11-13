@@ -2,7 +2,7 @@
 
 # 📅 Vecco Timeline
 
-[![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)](https://github.com/wikiwyrhead/vecco-timeline/releases)
+[![Version](https://img.shields.io/badge/version-1.3.0-blue.svg)](https://github.com/wikiwyrhead/vecco-timeline/releases)
 [![WordPress](https://img.shields.io/badge/WordPress-5.8%2B-blue.svg)](https://wordpress.org/)
 [![PHP](https://img.shields.io/badge/PHP-7.4%2B-purple.svg)](https://www.php.net/)
 [![License](https://img.shields.io/badge/license-GPL--2.0-green.svg)](LICENSE)
@@ -157,6 +157,17 @@ Contributions are welcome! Please:
 ---
 
 ## 📋 Changelog
+
+### 🎉 Version 1.3.0 - *November 2025*
+
+#### 🐛 Bug Fixes
+- 🖱️ Fixed drag-to-reorder functionality in timeline editor
+- ⏱️ Fixed JavaScript timing issue - now properly waits for jQuery UI Sortable to load
+
+#### ✨ Enhancements
+- 📏 Separator line now dynamically aligns with year text center across all viewports
+- 🔗 Added Settings link to plugin actions on plugins page
+- 📱 Improved responsive alignment for desktop, tablet, and mobile views
 
 ### 🎉 Version 1.2.0 - *November 2025*
 
