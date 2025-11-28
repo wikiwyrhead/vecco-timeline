@@ -2,7 +2,7 @@
 
 # 📅 Vecco Timeline
 
-[![Version](https://img.shields.io/badge/version-1.3.0-blue.svg)](https://github.com/wikiwyrhead/vecco-timeline/releases)
+[![Version](https://img.shields.io/badge/version-1.4.0-blue.svg)](https://github.com/wikiwyrhead/vecco-timeline/releases)
 [![WordPress](https://img.shields.io/badge/WordPress-5.8%2B-blue.svg)](https://wordpress.org/)
 [![PHP](https://img.shields.io/badge/PHP-7.4%2B-purple.svg)](https://www.php.net/)
 [![License](https://img.shields.io/badge/license-GPL--2.0-green.svg)](LICENSE)
@@ -141,13 +141,17 @@ vecco-timeline/
 ```
 
 ### Hooks & Filters
+
 The plugin uses standard WordPress hooks:
+
 - `init` - Register CPT and meta
 - `wp_enqueue_scripts` - Load assets on-demand
 - `add_meta_boxes` - Timeline editor interface
 
 ### Contributing
+
 Contributions are welcome! Please:
+
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit changes (`git commit -m 'Add amazing feature'`)
@@ -157,6 +161,19 @@ Contributions are welcome! Please:
 ---
 
 ## 📋 Changelog
+
+### 🚀 Version 1.4.0 - *November 2025*
+
+#### ✨ New
+- Positioning styles: **Full width** and **Centered (no fade)**
+- Global setting: **Center on first load** for a balanced initial view (applies to Centered and Full width)
+- Optional safe‑area gutters for Full width (desktop, tablet, mobile)
+
+#### 🛠 Improvements
+- Full width now supports true edge‑to‑edge scrolling; when centering is enabled, first render shows a balanced view
+
+#### 🐞 Fixes
+- Settings checkbox for initial centering now saves correctly when unchecked
 
 ### 🎉 Version 1.3.0 - *November 2025*
 

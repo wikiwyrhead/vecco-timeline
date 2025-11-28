@@ -590,10 +590,40 @@ class Vecco_Timeline {
         $wrap_id = 'vecco-timeline-' . intval($post_id) . '-' . $inst;
 
         ob_start();
-        $wrap_style = $font_px ? ' style="font-size:'.$font_px.'px"' : '';
+        // Wrapper classes and CSS vars for positioning style
+        $pos_style = isset($defaults['position_style']) ? $defaults['position_style'] : 'original';
+        $is_centered = ($pos_style === 'centered' || $pos_style === 'centered_no_fade');
+        $is_fullwidth = ($pos_style === 'fullwidth');
+        $wrap_style_vars = '';
+        if ( $is_centered ) {
+            $pad_d = isset($defaults['pad_desktop']) ? (int)$defaults['pad_desktop'] : 60;
+            $pad_t = isset($defaults['pad_tablet'])  ? (int)$defaults['pad_tablet']  : 40;
+            $pad_m = isset($defaults['pad_mobile'])  ? (int)$defaults['pad_mobile']  : 16;
+            $fade_d = isset($defaults['fade_desktop']) ? (int)$defaults['fade_desktop'] : 22;
+            $fade_t = isset($defaults['fade_tablet'])  ? (int)$defaults['fade_tablet']  : 18;
+            $fade_m = isset($defaults['fade_mobile'])  ? (int)$defaults['fade_mobile']  : 14;
+            $wrap_style_vars = '--vtl-pad-desktop:'.$pad_d.'px;--vtl-pad-tablet:'.$pad_t.'px;--vtl-pad-mobile:'.$pad_m.'px;--vtl-fade-desktop:'.$fade_d.'px;--vtl-fade-tablet:'.$fade_t.'px;--vtl-fade-mobile:'.$fade_m.'px;';
+        } elseif ( $is_fullwidth ) {
+            // Full width: optional safe-area gutters
+            $fw_d = isset($defaults['fw_safe_desktop']) ? (int)$defaults['fw_safe_desktop'] : 0;
+            $fw_t = isset($defaults['fw_safe_tablet'])  ? (int)$defaults['fw_safe_tablet']  : 0;
+            $fw_m = isset($defaults['fw_safe_mobile'])  ? (int)$defaults['fw_safe_mobile']  : 0;
+            $wrap_style_vars = '--vtl-fw-safe-desktop:'.$fw_d.'px;--vtl-fw-safe-tablet:'.$fw_t.'px;--vtl-fw-safe-mobile:'.$fw_m.'px;';
+        } else {
+            // Original style: provide margin variables
+            $om_d = isset($defaults['orig_m_desktop']) ? (int)$defaults['orig_m_desktop'] : 30;
+            $om_t = isset($defaults['orig_m_tablet'])  ? (int)$defaults['orig_m_tablet']  : 24;
+            $om_m = isset($defaults['orig_m_mobile'])  ? (int)$defaults['orig_m_mobile']  : 16;
+            $wrap_style_vars = '--vtl-orig-m-desktop:'.$om_d.'px;--vtl-orig-m-tablet:'.$om_t.'px;--vtl-orig-m-mobile:'.$om_m.'px;';
+        }
+        $wrap_style = ' style="' . ( $font_px ? 'font-size:'.$font_px.'px;' : '' ) . $wrap_style_vars . '"';
         // Inject scoped CSS so widths and fonts can be controlled per timeline
         $css  = '#'.esc_attr($wrap_id).' .vecco-tl-sep{flex-basis:'.esc_attr($sep_w_desktop).'px;max-width:'.esc_attr($sep_w_desktop).'px;width:'.esc_attr($sep_w_desktop).'px}';
         $css .= '@media(max-width:768px){#'.esc_attr($wrap_id).' .vecco-tl-sep{flex-basis:'.esc_attr($sep_w_mobile).'px;max-width:'.esc_attr($sep_w_mobile).'px;width:'.esc_attr($sep_w_mobile).'px}}';
+        // Edge spacers disabled (container padding controls edges)
+        $edge_desktop = 0; $edge_mobile = 0;
+        $css .= '#'.esc_attr($wrap_id).' .vecco-tl-edge{flex:0 0 '.esc_attr($edge_desktop).'px;max-width:'.esc_attr($edge_desktop).'px;width:'.esc_attr($edge_desktop).'px}';
+        $css .= '@media(max-width:768px){#'.esc_attr($wrap_id).' .vecco-tl-edge{flex-basis:'.esc_attr($edge_mobile).'px;max-width:'.esc_attr($edge_mobile).'px;width:'.esc_attr($edge_mobile).'px}}';
         // Apply per-timeline fonts if set; otherwise fall back to global settings
         if ( $pt_font_year !== '' )  { $css .= '#'.esc_attr($wrap_id).' .vecco-tl-year{font-family:'.$pt_font_year.'!important}'; }
         elseif ( $gf_year !== '' )  { $css .= '#'.esc_attr($wrap_id).' .vecco-tl-year{font-family:'.$gf_year.'!important}'; }
@@ -603,9 +633,21 @@ class Vecco_Timeline {
         elseif ( $gf_desc !== '' )  { $css .= '#'.esc_attr($wrap_id).' .vecco-tl-desc{font-family:'.$gf_desc.'!important}'; }
         
         echo '<style id="'.esc_attr($wrap_id).'-scoped">'.$css.'</style>';
-        echo '<div id="'.esc_attr($wrap_id).'" class="vecco-timeline" role="region" aria-label="'.esc_attr__('Interactive timeline', 'vecco-timeline').'"'.$wrap_style.'>';
+        $wrap_classes = 'vecco-timeline';
+        if ( $is_centered ) { $wrap_classes .= ' is-centered'; }
+        if ( $is_fullwidth ) { $wrap_classes .= ' is-fullwidth'; }
+        if ( $pos_style === 'centered_no_fade' ) { $wrap_classes .= ' no-fade'; }
+        echo '<div id="'.esc_attr($wrap_id).'" class="'.esc_attr($wrap_classes).'" role="region" aria-label="'.esc_attr__('Interactive timeline', 'vecco-timeline').'"'.$wrap_style.'>';
         $wheel_off = !empty($defaults['disable_wheel']);
-        echo '<div class="vecco-tl-track" role="list" aria-live="polite"'.($wheel_off ? ' data-disable-wheel="1"' : '').'>';
+        $center_initial = !empty($defaults['center_initial']);
+        echo '<div class="vecco-tl-track" role="list" aria-live="polite"'
+           . ($wheel_off ? ' data-disable-wheel="1"' : '')
+           . ($center_initial ? ' data-center-initial="1"' : '')
+           . '>';
+        // Start edge spacer only for centered style
+        if ( $is_centered ) {
+            echo '<div class="vecco-tl-edge vecco-tl-edge-start" aria-hidden="true"></div>';
+        }
         $count = count( $items );
         foreach ( $items as $i => $it ) {
             $year = esc_html( $it['year'] ?? '' );

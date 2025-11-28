@@ -1,5 +1,76 @@
 /* Vecco Timeline front styles */
-.vecco-timeline{ width:100%; overflow:hidden; }
+/* Original style: no special width/padding/mask needed. */
+
+/* Centered style (scoped) */
+.vecco-timeline.is-centered{
+  /* container width and horizontal padding */
+  width: var(--vtl-width, 90%);
+  margin: 0 auto;
+  overflow: hidden;
+  padding: 0 var(--vtl-pad-desktop, 60px);
+  box-sizing: border-box;
+  /* default fade strength (overridden per breakpoint below) */
+  --vtl-edge-fade-current: var(--vtl-fade-desktop, 22px);
+}
+@media (max-width:992px){
+  .vecco-timeline.is-centered{
+    width: var(--vtl-width-tablet, 94%);
+    padding: 0 var(--vtl-pad-tablet, 40px);
+    --vtl-edge-fade-current: var(--vtl-fade-tablet, 18px);
+  }
+}
+@media (max-width:768px){
+  .vecco-timeline.is-centered{
+    width: var(--vtl-width-mobile, 96%);
+    padding: 0 var(--vtl-pad-mobile, 16px);
+    --vtl-edge-fade-current: var(--vtl-fade-mobile, 14px);
+  }
+}
+/* Bleed the track under the container padding to avoid hard cut at edges */
+.vecco-timeline.is-centered .vecco-tl-track{
+  margin: 0 calc(var(--vtl-pad-desktop, 60px) * -1);
+  padding: 0 var(--vtl-pad-desktop, 60px);
+}
+@media (max-width:992px){ .vecco-timeline.is-centered .vecco-tl-track{ margin:0 calc(var(--vtl-pad-tablet,40px)*-1); padding:0 var(--vtl-pad-tablet,40px); } }
+@media (max-width:768px){ .vecco-timeline.is-centered .vecco-tl-track{ margin:0 calc(var(--vtl-pad-mobile,16px)*-1); padding:0 var(--vtl-pad-mobile,16px); } }
+/* Subtle mask fade to hide hard cuts at the extreme edges while scrolling */
+.vecco-timeline.is-centered .vecco-tl-track{
+  -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0) 0, rgba(0,0,0,1) var(--vtl-edge-fade-current), rgba(0,0,0,1) calc(100% - var(--vtl-edge-fade-current)), rgba(0,0,0,0) 100%);
+  mask-image: linear-gradient(to right, rgba(0,0,0,0) 0, rgba(0,0,0,1) var(--vtl-edge-fade-current), rgba(0,0,0,1) calc(100% - var(--vtl-edge-fade-current)), rgba(0,0,0,0) 100%);
+}
+
+/* Centered (no fade): keep centered layout but remove edge mask */
+.vecco-timeline.is-centered.no-fade .vecco-tl-track{
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+/* Original style: use horizontal margins driven by settings */
+.vecco-timeline:not(.is-centered) .vecco-tl-track{ margin: 0 var(--vtl-orig-m-desktop, 30px); padding-left:0; padding-right:0; }
+@media (max-width:992px){ .vecco-timeline:not(.is-centered) .vecco-tl-track{ margin: 0 var(--vtl-orig-m-tablet, 24px); } }
+@media (max-width:768px){ .vecco-timeline:not(.is-centered) .vecco-tl-track{ margin: 0 var(--vtl-orig-m-mobile, 16px); } }
+
+/* Full width style: edge-to-edge with optional safe-area gutters */
+.vecco-timeline.is-fullwidth{
+  width: 100%;
+  margin: 0;
+  padding: 0 var(--vtl-fw-safe-desktop, 0px);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+@media (max-width:992px){
+  .vecco-timeline.is-fullwidth{ padding: 0 var(--vtl-fw-safe-tablet, 0px); }
+}
+@media (max-width:768px){
+  .vecco-timeline.is-fullwidth{ padding: 0 var(--vtl-fw-safe-mobile, 0px); }
+}
+/* Ensure track does not inherit original margins when fullwidth is active */
+.vecco-timeline.is-fullwidth .vecco-tl-track{ margin: 0; padding-left:0; padding-right:0; }
+/* Edge-to-edge content: trim inner item paddings at the extremes */
+.vecco-timeline.is-fullwidth .vecco-tl-item:first-child{ padding-left:0; }
+.vecco-timeline.is-fullwidth .vecco-tl-item:last-child{ padding-right:0; }
+/* No fade mask in full width mode */
+.vecco-timeline.is-fullwidth .vecco-tl-track{ -webkit-mask-image:none; mask-image:none; }
 
 /* Custom scrollbar (Swiper-like) */
 .vecco-timeline .vecco-scrollbar{ position:relative; height:6px; border-radius:6px; background:rgba(255,255,255,.15); margin:20px auto 0; overflow:hidden; width:clamp(180px, 42%, 560px) }

@@ -36,7 +36,24 @@ class Vecco_Timeline_Admin {
             'font_title' => '',
             'font_desc' => '',
             'webfont_url' => '',
-            'disable_wheel' => 0
+            'disable_wheel' => 0,
+            // Positioning defaults (global)
+            'position_style' => 'original', // original | centered | fullwidth | centered_no_fade
+            'center_initial' => 1,
+            'pad_desktop' => 60,
+            'pad_tablet'  => 40,
+            'pad_mobile'  => 16,
+            'fade_desktop' => 22,
+            'fade_tablet'  => 18,
+            'fade_mobile'  => 14,
+            // Original style: margins per breakpoint
+            'orig_m_desktop' => 30,
+            'orig_m_tablet'  => 24,
+            'orig_m_mobile'  => 16,
+            // Full width: optional safe-area gutters (per breakpoint)
+            'fw_safe_desktop' => 0,
+            'fw_safe_tablet'  => 0,
+            'fw_safe_mobile'  => 8,
         ];
         $opt = get_option( self::OPTION, [] );
         if ( ! is_array( $opt ) ) $opt = [];
@@ -88,6 +105,25 @@ class Vecco_Timeline_Admin {
                     <?php esc_html_e( 'These are global defaults that apply to ALL timelines. When editing an individual timeline, you\'ll see "Per-timeline Overrides" which let you customize that specific timeline. If a per-timeline setting is empty, it inherits from these global defaults. Use global settings for consistency across multiple timelines, and per-timeline overrides when you need unique styling for specific timelines.', 'vecco-timeline' ); ?>
                 </p>
             </div>
+        <script>
+        window.addEventListener('DOMContentLoaded', function(){
+          var radios = document.querySelectorAll('input[name="<?php echo esc_js( self::OPTION ); ?>[position_style]"]');
+          var centered = document.getElementById('vtl-pos-centered-fields');
+          var original = document.getElementById('vtl-pos-original-fields');
+          var fullwidth = document.getElementById('vtl-pos-fullwidth-fields');
+          var centeredNoFade = document.getElementById('vtl-pos-centered-nofade-fields');
+          function sync(){
+            var checked = document.querySelector('input[name="<?php echo esc_js( self::OPTION ); ?>[position_style]"]:checked');
+            var val = checked ? checked.value : 'original';
+            if (centered) centered.style.display = (val === 'centered') ? '' : 'none';
+            if (original) original.style.display = (val === 'original') ? '' : 'none';
+            if (fullwidth) fullwidth.style.display = (val === 'fullwidth') ? '' : 'none';
+            if (centeredNoFade) centeredNoFade.style.display = (val === 'centered_no_fade') ? '' : 'none';
+          }
+          radios.forEach(function(r){ r.addEventListener('change', sync); });
+          sync();
+        });
+        </script>
             <form method="post" action="options.php">
                 <?php settings_fields( 'vecco_tl_settings' ); ?>
                 
@@ -130,6 +166,20 @@ class Vecco_Timeline_Admin {
                                 </div>
                             </div>
                         </div>
+                        <div class="settings-group">
+                            <div class="group-title"><?php esc_html_e( 'Initial View', 'vecco-timeline' ); ?></div>
+                            <div class="field-row">
+                                <div class="field-item">
+                                    <!-- Hidden field ensures unchecked state saves as 0 -->
+                                    <input type="hidden" name="<?php echo esc_attr( self::OPTION ); ?>[center_initial]" value="0" />
+                                    <label style="display:flex;align-items:center;gap:8px">
+                                        <input type="checkbox" name="<?php echo esc_attr( self::OPTION ); ?>[center_initial]" value="1" <?php checked( !empty($settings['center_initial']) ); ?> />
+                                        <span class="field-label" style="margin:0"><?php esc_html_e( 'Center on first load (balanced initial view)', 'vecco-timeline' ); ?></span>
+                                    </label>
+                                    <p class="field-help"><?php esc_html_e( 'Applies when style is Centered (with or without fade) or Full width. Original ignores this.', 'vecco-timeline' ); ?></p>
+                                </div>
+                            </div>
+                        </div>
                         
                         <!-- Spacing Settings -->
                         <div class="settings-group">
@@ -151,6 +201,127 @@ class Vecco_Timeline_Admin {
                                     <span class="field-help" style="margin-top:0;flex:1;font-size:11px"><?php esc_html_e( 'Gap between items on screens ≤768px (recommended: 8-32px). Applies globally.', 'vecco-timeline' ); ?></span>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Positioning Settings -->
+                <div class="settings-card">
+                    <div class="settings-header">
+                        <h2><?php esc_html_e( 'Positioning', 'vecco-timeline' ); ?></h2>
+                        <p><?php esc_html_e( 'Choose how timelines are positioned. "Original" keeps the classic layout. "Centered with fade" centers the container with fixed side padding and a subtle edge fade while scrolling.', 'vecco-timeline' ); ?></p>
+                    </div>
+                    <div class="settings-body">
+                        <?php $pos = isset($settings['position_style']) ? $settings['position_style'] : 'original'; ?>
+                        <div class="settings-group">
+                            <div class="group-title"><?php esc_html_e( 'Style', 'vecco-timeline' ); ?></div>
+                            <div class="field-row">
+                                <label class="field-item" style="flex-direction:row;align-items:center;gap:8px">
+                                    <input type="radio" name="<?php echo esc_attr( self::OPTION ); ?>[position_style]" value="original" <?php checked( $pos, 'original' ); ?> />
+                                    <span class="field-label" style="margin:0"><?php esc_html_e( 'Original (default)', 'vecco-timeline' ); ?></span>
+                                </label>
+                                <label class="field-item" style="flex-direction:row;align-items:center;gap:8px">
+                                    <input type="radio" name="<?php echo esc_attr( self::OPTION ); ?>[position_style]" value="centered" <?php checked( $pos, 'centered' ); ?> />
+                                    <span class="field-label" style="margin:0"><?php esc_html_e( 'Centered with fade', 'vecco-timeline' ); ?></span>
+                                </label>
+                                <label class="field-item" style="flex-direction:row;align-items:center;gap:8px">
+                                    <input type="radio" name="<?php echo esc_attr( self::OPTION ); ?>[position_style]" value="fullwidth" <?php checked( $pos, 'fullwidth' ); ?> />
+                                    <span class="field-label" style="margin:0"><?php esc_html_e( 'Full width', 'vecco-timeline' ); ?></span>
+                                </label>
+                                <label class="field-item" style="flex-direction:row;align-items:center;gap:8px">
+                                    <input type="radio" name="<?php echo esc_attr( self::OPTION ); ?>[position_style]" value="centered_no_fade" <?php checked( $pos, 'centered_no_fade' ); ?> />
+                                    <span class="field-label" style="margin:0"><?php esc_html_e( 'Centered (no fade)', 'vecco-timeline' ); ?></span>
+                                </label>
+                            </div>
+                        </div>
+                        <!-- Original style settings -->
+                        <div class="settings-group" id="vtl-pos-original-fields" style="<?php echo ($pos==='original') ? '' : 'display:none'; ?>">
+                            <div class="group-title"><?php esc_html_e( 'Original – Settings', 'vecco-timeline' ); ?></div>
+                            <div class="field-row">
+                                <div class="field-item">
+                                    <label class="field-label"><?php esc_html_e( 'Side Margin (px) – Desktop', 'vecco-timeline' ); ?></label>
+                                    <input type="number" min="0" max="200" name="<?php echo esc_attr( self::OPTION ); ?>[orig_m_desktop]" value="<?php echo esc_attr( (int)$settings['orig_m_desktop'] ); ?>" />
+                                </div>
+                                <div class="field-item">
+                                    <label class="field-label"><?php esc_html_e( 'Side Margin (px) – Tablet', 'vecco-timeline' ); ?></label>
+                                    <input type="number" min="0" max="200" name="<?php echo esc_attr( self::OPTION ); ?>[orig_m_tablet]" value="<?php echo esc_attr( (int)$settings['orig_m_tablet'] ); ?>" />
+                                </div>
+                                <div class="field-item">
+                                    <label class="field-label"><?php esc_html_e( 'Side Margin (px) – Mobile', 'vecco-timeline' ); ?></label>
+                                    <input type="number" min="0" max="200" name="<?php echo esc_attr( self::OPTION ); ?>[orig_m_mobile]" value="<?php echo esc_attr( (int)$settings['orig_m_mobile'] ); ?>" />
+                                </div>
+                            </div>
+                            <p class="field-help"><?php esc_html_e( 'These margins apply when the positioning style is set to "Original".', 'vecco-timeline' ); ?></p>
+                        </div>
+                        <div class="settings-group" id="vtl-pos-centered-fields" style="<?php echo ($pos==='centered') ? '' : 'display:none'; ?>">
+                            <div class="group-title"><?php esc_html_e( 'Centered with fade – Settings', 'vecco-timeline' ); ?></div>
+                            <div class="field-row">
+                                <div class="field-item">
+                                    <label class="field-label"><?php esc_html_e( 'Desktop Padding (px)', 'vecco-timeline' ); ?></label>
+                                    <input type="number" min="0" max="200" name="<?php echo esc_attr( self::OPTION ); ?>[pad_desktop]" value="<?php echo esc_attr( (int)$settings['pad_desktop'] ); ?>" />
+                                </div>
+                                <div class="field-item">
+                                    <label class="field-label"><?php esc_html_e( 'Tablet Padding (px)', 'vecco-timeline' ); ?></label>
+                                    <input type="number" min="0" max="200" name="<?php echo esc_attr( self::OPTION ); ?>[pad_tablet]" value="<?php echo esc_attr( (int)$settings['pad_tablet'] ); ?>" />
+                                </div>
+                                <div class="field-item">
+                                    <label class="field-label"><?php esc_html_e( 'Mobile Padding (px)', 'vecco-timeline' ); ?></label>
+                                    <input type="number" min="0" max="200" name="<?php echo esc_attr( self::OPTION ); ?>[pad_mobile]" value="<?php echo esc_attr( (int)$settings['pad_mobile'] ); ?>" />
+                                </div>
+                            </div>
+                            <div class="field-row">
+                                <div class="field-item">
+                                    <label class="field-label"><?php esc_html_e( 'Fade Intensity – Desktop (px)', 'vecco-timeline' ); ?></label>
+                                    <input type="number" min="0" max="60" name="<?php echo esc_attr( self::OPTION ); ?>[fade_desktop]" value="<?php echo esc_attr( (int)$settings['fade_desktop'] ); ?>" />
+                                </div>
+                                <div class="field-item">
+                                    <label class="field-label"><?php esc_html_e( 'Fade Intensity – Tablet (px)', 'vecco-timeline' ); ?></label>
+                                    <input type="number" min="0" max="60" name="<?php echo esc_attr( self::OPTION ); ?>[fade_tablet]" value="<?php echo esc_attr( (int)$settings['fade_tablet'] ); ?>" />
+                                </div>
+                                <div class="field-item">
+                                    <label class="field-label"><?php esc_html_e( 'Fade Intensity – Mobile (px)', 'vecco-timeline' ); ?></label>
+                                    <input type="number" min="0" max="60" name="<?php echo esc_attr( self::OPTION ); ?>[fade_mobile]" value="<?php echo esc_attr( (int)$settings['fade_mobile'] ); ?>" />
+                                </div>
+                            </div>
+                            <p class="field-help"><?php esc_html_e( 'These values apply when the positioning style is set to "Centered with fade".', 'vecco-timeline' ); ?></p>
+                        </div>
+                        <!-- Full width style settings -->
+                        <div class="settings-group" id="vtl-pos-fullwidth-fields" style="<?php echo ($pos==='fullwidth') ? '' : 'display:none'; ?>">
+                            <div class="group-title"><?php esc_html_e( 'Full width – Settings', 'vecco-timeline' ); ?></div>
+                            <div class="field-row">
+                                <div class="field-item">
+                                    <label class="field-label"><?php esc_html_e( 'Safe Area (px) – Desktop', 'vecco-timeline' ); ?></label>
+                                    <input type="number" min="0" max="60" name="<?php echo esc_attr( self::OPTION ); ?>[fw_safe_desktop]" value="<?php echo esc_attr( (int)$settings['fw_safe_desktop'] ); ?>" />
+                                </div>
+                                <div class="field-item">
+                                    <label class="field-label"><?php esc_html_e( 'Safe Area (px) – Tablet', 'vecco-timeline' ); ?></label>
+                                    <input type="number" min="0" max="60" name="<?php echo esc_attr( self::OPTION ); ?>[fw_safe_tablet]" value="<?php echo esc_attr( (int)$settings['fw_safe_tablet'] ); ?>" />
+                                </div>
+                                <div class="field-item">
+                                    <label class="field-label"><?php esc_html_e( 'Safe Area (px) – Mobile', 'vecco-timeline' ); ?></label>
+                                    <input type="number" min="0" max="60" name="<?php echo esc_attr( self::OPTION ); ?>[fw_safe_mobile]" value="<?php echo esc_attr( (int)$settings['fw_safe_mobile'] ); ?>" />
+                                </div>
+                            </div>
+                            <p class="field-help"><?php esc_html_e( 'Optional inner gutters at screen edges while keeping the timeline full width. Set to 0 for edge-to-edge items.', 'vecco-timeline' ); ?></p>
+                        </div>
+                        <!-- Centered (no fade) style settings -->
+                        <div class="settings-group" id="vtl-pos-centered-nofade-fields" style="<?php echo ($pos==='centered_no_fade') ? '' : 'display:none'; ?>">
+                            <div class="group-title"><?php esc_html_e( 'Centered (no fade) – Settings', 'vecco-timeline' ); ?></div>
+                            <div class="field-row">
+                                <div class="field-item">
+                                    <label class="field-label"><?php esc_html_e( 'Desktop Padding (px)', 'vecco-timeline' ); ?></label>
+                                    <input type="number" min="0" max="200" name="<?php echo esc_attr( self::OPTION ); ?>[pad_desktop]" value="<?php echo esc_attr( (int)$settings['pad_desktop'] ); ?>" />
+                                </div>
+                                <div class="field-item">
+                                    <label class="field-label"><?php esc_html_e( 'Tablet Padding (px)', 'vecco-timeline' ); ?></label>
+                                    <input type="number" min="0" max="200" name="<?php echo esc_attr( self::OPTION ); ?>[pad_tablet]" value="<?php echo esc_attr( (int)$settings['pad_tablet'] ); ?>" />
+                                </div>
+                                <div class="field-item">
+                                    <label class="field-label"><?php esc_html_e( 'Mobile Padding (px)', 'vecco-timeline' ); ?></label>
+                                    <input type="number" min="0" max="200" name="<?php echo esc_attr( self::OPTION ); ?>[pad_mobile]" value="<?php echo esc_attr( (int)$settings['pad_mobile'] ); ?>" />
+                                </div>
+                            </div>
+                            <p class="field-help"><?php esc_html_e( 'Same centering paddings as "Centered with fade" but without edge fading.', 'vecco-timeline' ); ?></p>
                         </div>
                     </div>
                 </div>

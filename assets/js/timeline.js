@@ -50,7 +50,9 @@
     track.style.cursor = 'grab';
     // Custom scrollbar elements under the same wrapper (must be inside initTrack)
     var wrap = track.closest('.vecco-timeline');
+    var isCentered = !!(wrap && wrap.classList.contains('is-centered'));
     var bar  = wrap && wrap.querySelector('.vecco-scrollbar.vecco-scrollbar-horizontal');
+    var isFullwidth = !!(wrap && wrap.classList.contains('is-fullwidth'));
     var dragEl = bar && bar.querySelector('.vecco-scrollbar-drag');
     var sb = { dragging:false, startX:0, startLeft:0 };
     // Ensure an end spacer exists to extend scrollWidth on mobile
@@ -345,10 +347,14 @@
         var hardCap = 6;
         return Math.min(hardCap, Math.max(minPad, Math.min(pad, maxPad)));
       }
-      var leftPad  = sidePadFor(first);
-      var rightPad = sidePadFor(last);
-      track.style.paddingLeft  = leftPad + 'px';
-      track.style.paddingRight = rightPad + 'px';
+      if (isCentered){
+        // Centered mode: rely on CSS padding/mask; ensure JS-created endSpacer is off
+        track.style.paddingLeft  = '0px';
+        track.style.paddingRight = '0px';
+        if (endSpacer){ endSpacer.style.flex = '0 0 0px'; endSpacer.style.width = '0px'; }
+      } else {
+        // Original mode: do not alter paddings or spacers here
+      }
       // Ensure scrollLeft remains within bounds after padding change
       var maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
       if (track.scrollLeft > maxScroll) track.scrollLeft = maxScroll;
@@ -356,10 +362,31 @@
       // Update custom scrollbar thumb after geometry change
       sbUpdate();
     }
+    // Center once after geometry settles so left/right gaps are balanced on first paint
+    var didCenter = false;
+    function centerOnce(){
+      if (didCenter) return;
+      // Center on initial load for centered variants and full width (balanced first view)
+      if (!isCentered && !isFullwidth) { didCenter = true; return; }
+      // Honor global setting from data attribute
+      if (!track.hasAttribute('data-center-initial')) { didCenter = true; return; }
+      try{
+        var maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
+        var mid = Math.round(maxScroll / 2);
+        track.scrollLeft = mid;
+        sbUpdate();
+        didCenter = true;
+      }catch(_){ /* noop */ }
+    }
+
     // Initial and responsive updates
-    requestAnimationFrame(updateEdgePadding);
+    requestAnimationFrame(function(){
+      updateEdgePadding();
+      // Try centering shortly after first layout
+      setTimeout(centerOnce, CONFIG.EDGE_SETTLE_DELAY);
+    });
     // Re-run shortly after load to settle after fonts/images
-    var loadHandler = function(){ setTimeout(updateEdgePadding, CONFIG.EDGE_SETTLE_DELAY); };
+    var loadHandler = function(){ setTimeout(function(){ updateEdgePadding(); centerOnce(); }, CONFIG.EDGE_SETTLE_DELAY); };
     var resizeEdgeHandler = debounce(updateEdgePadding, CONFIG.RESIZE_DEBOUNCE);
     window.addEventListener('load', loadHandler, { once:true, passive:true });
     window.addEventListener('resize', resizeEdgeHandler, { passive:true });
