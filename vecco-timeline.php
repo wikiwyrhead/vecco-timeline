@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Vecco Timeline
  * Description: Horizontal timeline with draggable scroll, custom CPT, shortcode rendering, and admin controls.
- * Version: 1.4.0
+ * Version: 1.5.0
  * Author: arneLG.
  * Plugin URI: https://github.com/wikiwyrhead/vecco-timeline
  * Author URI: https://github.com/wikiwyrhead
@@ -11,7 +11,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-define( 'VECCO_TL_VERSION', '1.4.0' );
+define( 'VECCO_TL_VERSION', '1.5.0' );
 define( 'VECCO_TL_DIR', plugin_dir_path( __FILE__ ) );
 define( 'VECCO_TL_URL', plugin_dir_url( __FILE__ ) );
 

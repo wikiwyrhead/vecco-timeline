@@ -369,11 +369,17 @@
       // Center on initial load for centered variants and full width (balanced first view)
       if (!isCentered && !isFullwidth) { didCenter = true; return; }
       // Honor global setting from data attribute
-      if (!track.hasAttribute('data-center-initial')) { didCenter = true; return; }
+      var initMode = track.getAttribute('data-center-initial');
+      if (!initMode) { didCenter = true; return; }
       try{
         var maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
-        var mid = Math.round(maxScroll / 2);
-        track.scrollLeft = mid;
+        var target = 0;
+        if (initMode === 'centered') {
+          target = Math.round(maxScroll / 2);
+        } else if (initMode === 'right') {
+          target = maxScroll;
+        }
+        track.scrollLeft = target;
         sbUpdate();
         didCenter = true;
       }catch(_){ /* noop */ }

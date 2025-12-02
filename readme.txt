@@ -5,7 +5,7 @@ Tags: timeline, slider, horizontal, shortcode, svg, icons
 Requires at least: 5.8
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.4.0
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -61,6 +61,13 @@ Yes. Paste sanitized SVG markup. It will inherit the item accent color.
 2. Frontend horizontal timeline with separators.
 
 == Changelog ==
+= 1.5.0 =
+* New: Initial View options — Left, Centered (balanced), Right
+* Improved: Desktop spacing now binds actual item gap and separator width together for consistent visual spacing
+* Improved: Separator line extender scales proportionally for small gaps to keep the line visually substantial
+* Improved: Proportional per-item horizontal padding with a 2px safety minimum on desktop and mobile
+* Fixed: Mobile small-spacing handling kept stable while enabling tighter layouts
+
 = 1.4.0 =
 * New: Positioning styles — Full width and Centered (no fade)
 * New: Global setting "Center on first load" for balanced initial view (applies to Centered and Full width)

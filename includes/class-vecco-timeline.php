@@ -616,10 +616,30 @@ class Vecco_Timeline {
             $om_m = isset($defaults['orig_m_mobile'])  ? (int)$defaults['orig_m_mobile']  : 16;
             $wrap_style_vars = '--vtl-orig-m-desktop:'.$om_d.'px;--vtl-orig-m-tablet:'.$om_t.'px;--vtl-orig-m-mobile:'.$om_m.'px;';
         }
+        // Add separator width variables
+        $wrap_style_vars .= '--vtl-sep-desktop:'.$sep_w_desktop.'px;--vtl-sep-mobile:'.$sep_w_mobile.'px;';
+        // Derive extender overhang and item padding from spacing with safe minimums
+        // For small gaps, extend the line more so it stays visually substantial
+        $sep_ext_desktop = max(24, min(96, (int) round($sep_w_desktop * 2))); // 24..96px
+        $sep_ext_mobile  = max(12, min(24, (int) round($sep_w_mobile * 2)));  // 12..24px
+        $item_pad_desktop = max(2, min(12, (int) round($sep_w_desktop / 6))); // 2..12px
+        $item_pad_mobile  = max(2, min(10, (int) round($sep_w_mobile  / 6))); // 2..10px
+        $wrap_style_vars .= '--vtl-sep-ext-desktop:'.$sep_ext_desktop.'px;--vtl-sep-ext-mobile:'.$sep_ext_mobile.'px;';
+        $wrap_style_vars .= '--vtl-item-pad-desktop:'.$item_pad_desktop.'px;--vtl-item-pad-mobile:'.$item_pad_mobile.'px;';
+        // Bind items-per-view on desktop to spacing (smaller spacing -> more items per view)
+        $items_desktop = 6;
+        if ($sep_w_desktop <= 4)      { $items_desktop = 10; }
+        elseif ($sep_w_desktop <= 8)  { $items_desktop = 8; }
+        elseif ($sep_w_desktop <= 16) { $items_desktop = 7; }
+        // Mobile stays at 2 per view to avoid layout breakage
+        $items_mobile = 2;
+        $wrap_style_vars .= '--vtl-items-desktop:'.$items_desktop.';--vtl-items-mobile:'.$items_mobile.';';
         $wrap_style = ' style="' . ( $font_px ? 'font-size:'.$font_px.'px;' : '' ) . $wrap_style_vars . '"';
-        // Inject scoped CSS so widths and fonts can be controlled per timeline
-        $css  = '#'.esc_attr($wrap_id).' .vecco-tl-sep{flex-basis:'.esc_attr($sep_w_desktop).'px;max-width:'.esc_attr($sep_w_desktop).'px;width:'.esc_attr($sep_w_desktop).'px}';
-        $css .= '@media(max-width:768px){#'.esc_attr($wrap_id).' .vecco-tl-sep{flex-basis:'.esc_attr($sep_w_mobile).'px;max-width:'.esc_attr($sep_w_mobile).'px;width:'.esc_attr($sep_w_mobile).'px}}';
+        // Initialize CSS string
+        $css = '';
+        // Separator widths with highest specificity
+        $css .= '#'.esc_attr($wrap_id).' .vecco-tl-sep{flex-basis:'.esc_attr($sep_w_desktop).'px!important;max-width:'.esc_attr($sep_w_desktop).'px!important;width:'.esc_attr($sep_w_desktop).'px!important}';
+        $css .= '@media(max-width:768px){#'.esc_attr($wrap_id).' .vecco-tl-sep{flex-basis:'.esc_attr($sep_w_mobile).'px!important;max-width:'.esc_attr($sep_w_mobile).'px!important;width:'.esc_attr($sep_w_mobile).'px!important}}';
         // Edge spacers disabled (container padding controls edges)
         $edge_desktop = 0; $edge_mobile = 0;
         $css .= '#'.esc_attr($wrap_id).' .vecco-tl-edge{flex:0 0 '.esc_attr($edge_desktop).'px;max-width:'.esc_attr($edge_desktop).'px;width:'.esc_attr($edge_desktop).'px}';
@@ -639,10 +659,10 @@ class Vecco_Timeline {
         if ( $pos_style === 'centered_no_fade' ) { $wrap_classes .= ' no-fade'; }
         echo '<div id="'.esc_attr($wrap_id).'" class="'.esc_attr($wrap_classes).'" role="region" aria-label="'.esc_attr__('Interactive timeline', 'vecco-timeline').'"'.$wrap_style.'>';
         $wheel_off = !empty($defaults['disable_wheel']);
-        $center_initial = !empty($defaults['center_initial']);
+        $center_initial = isset($defaults['center_initial']) ? $defaults['center_initial'] : 'centered';
         echo '<div class="vecco-tl-track" role="list" aria-live="polite"'
            . ($wheel_off ? ' data-disable-wheel="1"' : '')
-           . ($center_initial ? ' data-center-initial="1"' : '')
+           . ' data-center-initial="'.esc_attr($center_initial).'"'
            . '>';
         // Start edge spacer only for centered style
         if ( $is_centered ) {

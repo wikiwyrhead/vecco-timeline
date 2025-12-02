@@ -39,7 +39,7 @@ class Vecco_Timeline_Admin {
             'disable_wheel' => 0,
             // Positioning defaults (global)
             'position_style' => 'original', // original | centered | fullwidth | centered_no_fade
-            'center_initial' => 1,
+            'center_initial' => 'centered',
             'pad_desktop' => 60,
             'pad_tablet'  => 40,
             'pad_mobile'  => 16,
@@ -169,16 +169,20 @@ class Vecco_Timeline_Admin {
                         <div class="settings-group">
                             <div class="group-title"><?php esc_html_e( 'Initial View', 'vecco-timeline' ); ?></div>
                             <div class="field-row">
-                                <div class="field-item">
-                                    <!-- Hidden field ensures unchecked state saves as 0 -->
-                                    <input type="hidden" name="<?php echo esc_attr( self::OPTION ); ?>[center_initial]" value="0" />
-                                    <label style="display:flex;align-items:center;gap:8px">
-                                        <input type="checkbox" name="<?php echo esc_attr( self::OPTION ); ?>[center_initial]" value="1" <?php checked( !empty($settings['center_initial']) ); ?> />
-                                        <span class="field-label" style="margin:0"><?php esc_html_e( 'Center on first load (balanced initial view)', 'vecco-timeline' ); ?></span>
-                                    </label>
-                                    <p class="field-help"><?php esc_html_e( 'Applies when style is Centered (with or without fade) or Full width. Original ignores this.', 'vecco-timeline' ); ?></p>
-                                </div>
+                                <label class="field-item" style="flex-direction:row;align-items:center;gap:8px">
+                                    <input type="radio" name="<?php echo esc_attr( self::OPTION ); ?>[center_initial]" value="left" <?php checked( $settings['center_initial'], 'left' ); ?> />
+                                    <span class="field-label" style="margin:0"><?php esc_html_e( 'Left', 'vecco-timeline' ); ?></span>
+                                </label>
+                                <label class="field-item" style="flex-direction:row;align-items:center;gap:8px">
+                                    <input type="radio" name="<?php echo esc_attr( self::OPTION ); ?>[center_initial]" value="centered" <?php checked( $settings['center_initial'], 'centered' ); ?> />
+                                    <span class="field-label" style="margin:0"><?php esc_html_e( 'Centered (balanced)', 'vecco-timeline' ); ?></span>
+                                </label>
+                                <label class="field-item" style="flex-direction:row;align-items:center;gap:8px">
+                                    <input type="radio" name="<?php echo esc_attr( self::OPTION ); ?>[center_initial]" value="right" <?php checked( $settings['center_initial'], 'right' ); ?> />
+                                    <span class="field-label" style="margin:0"><?php esc_html_e( 'Right', 'vecco-timeline' ); ?></span>
+                                </label>
                             </div>
+                            <p class="field-help"><?php esc_html_e( 'Applies when style is Centered (with or without fade) or Full width. Original ignores this.', 'vecco-timeline' ); ?></p>
                         </div>
                         
                         <!-- Spacing Settings -->
@@ -189,16 +193,16 @@ class Vecco_Timeline_Admin {
                                 <div style="display:flex;align-items:center;gap:16px;padding:12px;background:#f8fafc;border-radius:6px;border:1px solid #e2e8f0">
                                     <div style="display:flex;flex-direction:column;gap:6px;min-width:140px">
                                         <label class="field-label"><?php esc_html_e( 'Desktop Spacing (px)', 'vecco-timeline' ); ?></label>
-                                        <input type="number" min="0" max="400" name="<?php echo esc_attr( self::OPTION ); ?>[sep_w_desktop]" value="<?php echo esc_attr( $settings['sep_w_desktop'] ); ?>" />
+                                        <input type="number" min="0" max="200" name="<?php echo esc_attr( self::OPTION ); ?>[sep_w_desktop]" value="<?php echo esc_attr( $settings['sep_w_desktop'] ); ?>" />
                                     </div>
-                                    <span class="field-help" style="margin-top:0;flex:1;font-size:11px"><?php esc_html_e( 'Gap between items on screens >768px (recommended: 80-200px). Applies globally.', 'vecco-timeline' ); ?></span>
+                                    <span class="field-help" style="margin-top:0;flex:1;font-size:11px"><?php esc_html_e( 'Gap between items on screens >768px (recommended: 80-200px). Set as low as 0-8px for tight spacing. Applies globally.', 'vecco-timeline' ); ?></span>
                                 </div>
                                 <div style="display:flex;align-items:center;gap:16px;padding:12px;background:#f8fafc;border-radius:6px;border:1px solid #e2e8f0">
                                     <div style="display:flex;flex-direction:column;gap:6px;min-width:140px">
                                         <label class="field-label"><?php esc_html_e( 'Mobile Spacing (px)', 'vecco-timeline' ); ?></label>
                                         <input type="number" min="0" max="200" name="<?php echo esc_attr( self::OPTION ); ?>[sep_w_mobile]" value="<?php echo esc_attr( $settings['sep_w_mobile'] ); ?>" />
                                     </div>
-                                    <span class="field-help" style="margin-top:0;flex:1;font-size:11px"><?php esc_html_e( 'Gap between items on screens ≤768px (recommended: 8-32px). Applies globally.', 'vecco-timeline' ); ?></span>
+                                    <span class="field-help" style="margin-top:0;flex:1;font-size:11px"><?php esc_html_e( 'Gap between items on screens ≤768px (recommended: 8-32px). Set as low as 0-4px for tight spacing. Applies globally.', 'vecco-timeline' ); ?></span>
                                 </div>
                             </div>
                         </div>

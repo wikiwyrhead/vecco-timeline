@@ -2,7 +2,7 @@
 
 # 📅 Vecco Timeline
 
-[![Version](https://img.shields.io/badge/version-1.4.0-blue.svg)](https://github.com/wikiwyrhead/vecco-timeline/releases)
+[![Version](https://img.shields.io/badge/version-1.5.0-blue.svg)](https://github.com/wikiwyrhead/vecco-timeline/releases)
 [![WordPress](https://img.shields.io/badge/WordPress-5.8%2B-blue.svg)](https://wordpress.org/)
 [![PHP](https://img.shields.io/badge/PHP-7.4%2B-purple.svg)](https://www.php.net/)
 [![License](https://img.shields.io/badge/license-GPL--2.0-green.svg)](LICENSE)
@@ -161,6 +161,19 @@ Contributions are welcome! Please:
 ---
 
 ## 📋 Changelog
+
+### 🚀 Version 1.5.0 - *December 2025*
+
+#### ✨ New
+- Initial View options: **Left**, **Centered (balanced)**, **Right**
+
+#### 🛠 Improvements
+- Desktop spacing now binds actual item gap and separator width together for consistent visual spacing
+- Separator line extender scales proportionally for small gaps (stays visually substantial on tight layouts)
+- Proportional per‑item horizontal padding with a 2px safety minimum on desktop and mobile
+
+#### 🐞 Fixes
+- Mobile small‑spacing handling kept stable while enabling tighter layouts
 
 ### 🚀 Version 1.4.0 - *November 2025*
 
